@@ -1,17 +1,9 @@
-import fetch, { Response as NodeFetchResponse } from 'node-fetch';
-import AbortController from "abort-controller"
 import { Response, ErrorResponse } from '../../types/response';
 import { OK, INTERNAL_SERVER_ERROR } from '../../lib/statusCodes';
 import { flattenBreeds } from '../../lib/breeds';
+import { getWithTimeout } from '../../lib/fetch';
 
 const GET_BREEDS_URL = 'https://dog.ceo/api/breeds/list/all';
-const TIMEOUT_MS = 300;
-
-const controller = new AbortController();
-
-const timeout = setTimeout(() => {
-	controller.abort();
-}, TIMEOUT_MS);
 
 interface BreedsResponse extends Response {
   body: string[];
@@ -19,15 +11,15 @@ interface BreedsResponse extends Response {
 
 export const handler = async (): Promise<BreedsResponse | ErrorResponse> => {
   try {
-    const res: NodeFetchResponse = await fetch(GET_BREEDS_URL, { signal: controller.signal });
+    const res = await getWithTimeout(new URL(GET_BREEDS_URL));
 
     const { status, message, code } = await res.json();
 
-    if (status == 'error') {
+    if (status !== 'success') {
       return {
         statusCode: code,
-        message
-      };    
+        message,
+      };
     }
 
     const groupedBreeds = flattenBreeds(message);
@@ -36,12 +28,10 @@ export const handler = async (): Promise<BreedsResponse | ErrorResponse> => {
       statusCode: OK,
       body: groupedBreeds,
     };
-  } catch (error: unknown) {
+  } catch (error: any) {
     return {
       statusCode: INTERNAL_SERVER_ERROR,
-      message: JSON.stringify(error),
+      message: JSON.stringify(error.message),
     };
-  } finally {
-    clearTimeout(timeout);
   }
 };

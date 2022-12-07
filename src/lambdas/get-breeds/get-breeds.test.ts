@@ -22,7 +22,7 @@ describe('get-breeds', () => {
 
   it('should return all breeds', async () => {
     mockedFetch.mockResolvedValueOnce({
-      json: () => (mockFetchResponse)
+      json: () => mockFetchResponse,
     });
 
     const response = await handler();
@@ -42,8 +42,14 @@ describe('get-breeds', () => {
   });
 
   it('should throw a 500 when external API timesout.', async () => {
-    // TODO
-    // const response = await handler();
-    expect(true);
+    mockedFetch.mockRejectedValueOnce(new Error('AbortError'));
+
+    const response = await handler();
+
+    expect(response).not.toBeNull();
+    expect(response.statusCode).toEqual(500);
+    if ('message' in response) {
+      expect(response.message).toEqual('"AbortError"');
+    }
   });
 });

@@ -3,33 +3,17 @@ interface Breeds {
 }
 
 export const flattenBreeds = (breeds: Breeds): string[] => {
-  const flattenedBreeds = [];
-
-  // Turn off eslint for this logic, I feel that this is a more readable approach.
-  /* eslint no-restricted-syntax: ["error"] */
-  for (const [key, value] of Object.entries(breeds)) {
-    // If there are no sub-breeds, add directly to our list.
-    if (!value.length) {
-      flattenedBreeds.push(key);
+  return Object.keys(breeds).reduce((acc, breed) => {
+    const subBreeds = breeds[breed];
+    // If there are no sub-breeds, add to accumulator
+    if (!subBreeds.length) {
+      acc.push(breed);
     } else {
       // Else, iterate through the subBreed and push the subBreed prepended to the breed.
-      value.forEach((subBreed) => {
-        flattenedBreeds.push(`${subBreed} ${key}`);
+      subBreeds.forEach((subBreed) => {
+        acc.push(`${subBreed} ${breed}`);
       });
     }
-  }
-
-  // Alternative using reduce.
-  // const flattenedBreeds = Object.keys(breeds).reduce((acc, breed) => {
-  //   if (breeds[breed].length === 0) {
-  //       // If there are no sub-breeds, add directly to our list.
-  //       acc.push(breed);
-  //     } else {
-  //         // Else, iterate through the subBreed and push the subBreed prepended to the breed.
-  //         acc.push(...breeds[breed].map((subBreed) => `${subBreed} ${breed}`));
-  //       }
-  //       return acc;
-  // }, [] as string[]);
-
-  return flattenedBreeds;
+    return acc;
+  }, [] as string[]);
 };
