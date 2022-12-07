@@ -22,9 +22,7 @@ describe('get-breeds', () => {
 
   it('should return all breeds', async () => {
     mockedFetch.mockResolvedValueOnce({
-      json: () => {
-        return mockFetchResponse;
-      },
+      json: () => (mockFetchResponse)
     });
 
     const response = await handler();
@@ -41,5 +39,11 @@ describe('get-breeds', () => {
         'french bulldog',
       ]);
     }
+  });
+
+  it('should throw a 500 when external API timesout.', async () => {
+    // TODO
+    // const response = await handler();
+    expect(true);
   });
 });
