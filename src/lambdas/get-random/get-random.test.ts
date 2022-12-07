@@ -5,7 +5,7 @@ const mockedFetch: jest.Mock = fetch as any;
 
 jest.mock('node-fetch');
 
-describe('random-get handler', () => {
+describe('get-random handler', () => {
   const mockPayload = { test: 'hello?' };
   beforeEach(() => {
     mockedFetch.mockReturnValueOnce({
