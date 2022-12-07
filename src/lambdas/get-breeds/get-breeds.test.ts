@@ -1,9 +1,9 @@
-import fetch from 'node-fetch';
-import { handler } from './get-breeds';
+import fetch from 'node-fetch'
+import { handler } from './get-breeds'
 
-jest.mock('node-fetch');
+jest.mock('node-fetch')
 
-const mockedFetch: jest.Mock = fetch as any;
+const mockedFetch: jest.Mock = fetch as any
 
 const mockFetchResponse = {
   message: {
@@ -13,22 +13,22 @@ const mockFetchResponse = {
     bulldog: ['boston', 'english', 'french'],
   },
   status: 'success',
-};
+}
 
 describe('get-breeds', () => {
   beforeEach(() => {
-    jest.resetAllMocks();
-  });
+    jest.resetAllMocks()
+  })
 
   it('should return all breeds', async () => {
     mockedFetch.mockResolvedValueOnce({
       json: () => mockFetchResponse,
-    });
+    })
 
-    const response = await handler();
+    const response = await handler()
 
-    expect(response).not.toBeNull();
-    expect(response.statusCode).toEqual(200);
+    expect(response).not.toBeNull()
+    expect(response.statusCode).toEqual(200)
     if ('body' in response) {
       expect(response.body).toEqual([
         'affenpinscher',
@@ -37,19 +37,19 @@ describe('get-breeds', () => {
         'boston bulldog',
         'english bulldog',
         'french bulldog',
-      ]);
+      ])
     }
-  });
+  })
 
   it('should throw a 500 when external API timesout.', async () => {
-    mockedFetch.mockRejectedValueOnce(new Error('AbortError'));
+    mockedFetch.mockRejectedValueOnce(new Error('AbortError'))
 
-    const response = await handler();
+    const response = await handler()
 
-    expect(response).not.toBeNull();
-    expect(response.statusCode).toEqual(500);
+    expect(response).not.toBeNull()
+    expect(response.statusCode).toEqual(500)
     if ('message' in response) {
-      expect(response.message).toEqual('"AbortError"');
+      expect(response.message).toEqual('"AbortError"')
     }
-  });
-});
+  })
+})
