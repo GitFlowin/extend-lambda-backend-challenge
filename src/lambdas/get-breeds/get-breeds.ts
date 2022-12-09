@@ -1,4 +1,4 @@
-import { Response, ErrorResponse } from '../../types/response'
+import { Response, HandlerResponse } from '../../types/response'
 import { OK, INTERNAL_SERVER_ERROR } from '../../lib/statusCodes'
 import { flattenBreeds } from '../../lib/breeds'
 import { getWithTimeout } from '../../lib/fetch'
@@ -9,7 +9,7 @@ interface BreedsResponse extends Response {
   body: string[]
 }
 
-export const handler = async (): Promise<BreedsResponse | ErrorResponse> => {
+export const handler = async (): Promise<HandlerResponse<BreedsResponse>> => {
   try {
     const res = await getWithTimeout(new URL(GET_BREEDS_URL))
 

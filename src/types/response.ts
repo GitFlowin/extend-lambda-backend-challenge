@@ -6,3 +6,5 @@ export interface Response {
 export interface ErrorResponse extends Response {
   message: string
 }
+
+export type HandlerResponse<T> = T | ErrorResponse

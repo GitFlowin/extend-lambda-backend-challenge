@@ -1,5 +1,5 @@
 import fetch, { Response as NodeFetchResponse } from 'node-fetch'
-import { Response, ErrorResponse } from '../../types/response'
+import { Response, HandlerResponse } from '../../types/response'
 
 const GET_RANDOM_URL = 'https://dog.ceo/api/breeds/image/random'
 
@@ -12,7 +12,7 @@ interface RandomDog {
   status: string
 }
 
-export const handler = async (): Promise<RandomResponse | ErrorResponse> => {
+export const handler = async (): Promise<HandlerResponse<RandomResponse>> => {
   try {
     const res: NodeFetchResponse = await fetch(GET_RANDOM_URL)
 
